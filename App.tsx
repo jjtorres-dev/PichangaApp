@@ -30,7 +30,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>¡Bienvenido a PichangaApp! ⚽</Text>
+      <Text style={styles.title}>¡Bienvenido a PichangaAppJJ! ⚽</Text>
       <Text style={styles.status}>{status}</Text>
       <Text style={styles.details}>{details}</Text>
       <StatusBar style="auto" />
