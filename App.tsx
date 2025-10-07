@@ -12,19 +12,26 @@ export default function App() {
 
   const testFirebaseConnection = async () => {
     try {
-      // Importación dinámica para evitar errores de compilación
-      const firebaseModule = await require('./src/config/firebase');
+      setStatus('📁 Buscando archivo firebase.ts...');
+      
+      // Verificar que el archivo existe
+      const firebaseModule = require('./src/config/firebase');
+      setStatus('✅ Archivo encontrado, inicializando...');
+      
+      // Pequeña pausa para que se vea el mensaje
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       if (firebaseModule.auth) {
-        setStatus('✅ Firebase CONECTADO');
-        setDetails('La configuración es correcta y funcionando');
+        setStatus('🎉 ¡FIREBASE CONECTADO!');
+        setDetails('Todo está funcionando correctamente ✅');
       } else {
-        setStatus('❌ Problema con Auth');
-        setDetails('El módulo auth no está disponible');
+        setStatus('❌ Auth no disponible');
+        setDetails('El módulo de autenticación no se cargó');
       }
+      
     } catch (error: any) {
-      setStatus('❌ Error de conexión');
-      setDetails(`Error: ${error.message}`);
+      setStatus('❌ Error crítico');
+      setDetails(`Mensaje: ${error.message}\n\nStack: ${error.stack}`);
     }
   };
 
@@ -54,13 +61,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   status: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
     textAlign: 'center',
   },
   details: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
     textAlign: 'center',
     marginTop: 10,
