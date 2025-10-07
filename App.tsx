@@ -1,33 +1,38 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useEffect } from 'react';
-import { auth } from './src/config/firebase';
+import React, { useEffect, useState } from 'react';
 
 export default function App() {
+  const [status, setStatus] = useState('🔌 Conectando con Firebase...');
+  const [details, setDetails] = useState('');
+
   useEffect(() => {
     testFirebaseConnection();
   }, []);
 
   const testFirebaseConnection = async () => {
     try {
-      console.log('🔌 Probando conexión con Firebase...');
-      // Verificar que auth se inicializó correctamente
-      if (auth) {
-        console.log('✅ Firebase Auth configurado correctamente');
-        console.log('🔑 Auth instance:', auth.app.name);
+      // Importación dinámica para evitar errores de compilación
+      const firebaseModule = await require('./src/config/firebase');
+      
+      if (firebaseModule.auth) {
+        setStatus('✅ Firebase CONECTADO');
+        setDetails('La configuración es correcta y funcionando');
       } else {
-        console.log('❌ Firebase Auth no se inicializó');
+        setStatus('❌ Problema con Auth');
+        setDetails('El módulo auth no está disponible');
       }
-    } catch (error) {
-      console.log('❌ Error en Firebase:', error);
+    } catch (error: any) {
+      setStatus('❌ Error de conexión');
+      setDetails(`Error: ${error.message}`);
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>¡Bienvenido a PichangaApp! ⚽</Text>
-      <Text style={styles.subtitle}>Firebase conectado 🔥</Text>
-      <Text style={styles.instruction}>Revisa la consola para ver el estado</Text>
+      <Text style={styles.status}>{status}</Text>
+      <Text style={styles.details}>{details}</Text>
       <StatusBar style="auto" />
     </View>
   );
@@ -39,22 +44,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#2E8B57', // Verde fútbol
+    marginBottom: 30,
+    color: '#2E8B57',
+    textAlign: 'center',
   },
-  subtitle: {
-    fontSize: 18,
+  status: {
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 10,
-    color: '#FF6B35', // Naranja energético
+    textAlign: 'center',
   },
-  instruction: {
+  details: {
     fontSize: 14,
     color: '#666',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 10,
   },
 });
